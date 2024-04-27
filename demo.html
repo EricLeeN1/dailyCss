@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
+      body,
+      html {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        font-family: 'Montserrat', sans-serif;
+      }
+
+      @property --per {
+        syntax: '<percentage>';
+        inherits: false;
+        initial-value: 22%;
+      }
+
+      .g-aurora {
+        position: relative;
+        margin: auto;
+        width: 340px;
+        height: 180px;
+        border: 2px solid #5b595b;
+        overflow: hidden;
+
+        &::before {
+          content: '';
+          position: absolute;
+          left: -20px;
+          top: -10px;
+          right: -20px;
+          bottom: -20px;
+          background: linear-gradient(
+            -30deg,
+            #a4d7e0,
+            rgba(164, 215, 224, 0.9) 48%,
+            transparent 62%
+          );
+          filter: url(#smoke);
+        }
+      }
+      .right::before {
+        background: linear-gradient(-30deg, #ff0020, rgba(229, 23, 49, 0.9) 48%, transparent 62%);
+        transform: scaleX(-1);
+      }
+
+      .breathe {
+        &::after {
+          content: 'THESHY';
+          position: absolute;
+          bottom: 10px;
+          left: 10px;
+          color: #fff;
+          font-size: 18px;
+        }
+        &::before {
+          background: linear-gradient(
+            -45deg,
+            #ff0020,
+            rgba(229, 23, 49, 0.9) var(--per),
+            transparent calc(var(--per) + 8%)
+          );
+          transform: scaleX(-1);
+          animation: change 2s infinite ease-out;
+        }
+      }
+
+      @keyframes change {
+        50% {
+          --per: 18%;
+        }
+      }
+
+      svg {
+        width: 0;
+        height: 0;
+      }
+
+      .left img {
+        width: 150%;
+        height: 150%;
+        object-fit: cover;
+        object-position: -150px center;
+      }
+      .right img {
+        width: 120%;
+        height: 120%;
+        object-fit: cover;
+        object-position: -30px center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="g-aurora left">
+      <img src="https://s4.ax1x.com/2022/01/18/7wvE7R.jpg" />
+    </div>
+    <div class="g-aurora right">
+      <img src="https://s4.ax1x.com/2022/01/19/7rSleU.jpg" />
+    </div>
+    <div class="g-aurora right breathe">
+      <img src="https://s4.ax1x.com/2022/01/19/7rSleU.jpg" />
+    </div>
+
+    <svg id="blob" version="1.1" xmlns="http://www.w3.org/2000/svg">
+      <filter id="smoke">
+        <feturbulence
+          type="fractalNoise"
+          baseFrequency=".035 .015"
+          numOctaves="20"
+          id="turbulence"
+          result="noise"
+        />
+        <fedisplacementmap id="displacement" in2="noise" in="SourceGraphic" scale="30" />
+      </filter>
+    </svg>
+  </body>
+  <script>
+    const filter = document.querySelector('#turbulence')
+    let frames = 1
+    let rad = Math.PI / 180
+    let bfx, bfy
+
+    function freqAnimation() {
+      frames += 0.35
+
+      bfx = 0.035
+      bfy = 0.015
+
+      bfx += 0.006 * Math.cos(frames * rad)
+      bfy += 0.004 * Math.sin(frames * rad)
+
+      bf = bfx.toString() + ' ' + bfy.toString()
+      filter.setAttributeNS(null, 'baseFrequency', bf)
+
+      window.requestAnimationFrame(freqAnimation)
+    }
+
+    window.requestAnimationFrame(freqAnimation)
+  </script>
+</html>
